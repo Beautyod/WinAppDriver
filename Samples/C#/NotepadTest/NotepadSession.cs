@@ -19,6 +19,7 @@ using OpenQA.Selenium.Appium.Windows;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium;
 using System;
+using OpenQA.Selenium.Appium;
 
 namespace NotepadTest
 {
@@ -36,13 +37,18 @@ namespace NotepadTest
             if (session == null)
             {
                 // Create a new session to launch Notepad application
-                DesiredCapabilities appCapabilities = new DesiredCapabilities();
-                appCapabilities.SetCapability("app", NotepadAppId);
-                session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
+                AppiumOptions opt = new AppiumOptions();
+                opt.AddAdditionalCapability("app", NotepadAppId);
+                opt.AddAdditionalCapability("platformName", "Windows");
+                opt.AddAdditionalCapability("deviceName", "WindowsPC");
+                session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), opt);
+
+
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 
                 // Verify that Notepad is started with untitled new file
+                // IMPORTANT NOTE FOR ERRORS: If your Windows language is not English, you need to adjust the string to your localised text. (Also other texts in this demo.)
                 Assert.AreEqual("Untitled - Notepad", session.Title);
 
                 // Set implicit timeout to 1.5 seconds to make element search to retry every 500 ms for at most three times
