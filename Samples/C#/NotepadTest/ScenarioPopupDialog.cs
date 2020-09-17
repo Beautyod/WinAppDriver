@@ -20,6 +20,7 @@ using OpenQA.Selenium.Remote;
 using OpenQA.Selenium;
 using System.Threading;
 using System;
+using OpenQA.Selenium.Appium;
 
 namespace NotepadTest
 {
@@ -62,11 +63,12 @@ namespace NotepadTest
         public static void ClassCleanup()
         {
             // Create a Windows Explorer session to delete the saved text file above
-            DesiredCapabilities appCapabilities = new DesiredCapabilities();
-            appCapabilities.SetCapability("app", ExplorerAppId);
-            appCapabilities.SetCapability("deviceName", "WindowsPC");
-
-            WindowsDriver<WindowsElement> windowsExplorerSession = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
+            AppiumOptions opt = new AppiumOptions();
+            opt.AddAdditionalCapability("app", ExplorerAppId);
+            opt.AddAdditionalCapability("platformName", "Windows");
+            opt.AddAdditionalCapability("deviceName", "WindowsPC");
+            session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), opt);
+            WindowsDriver<WindowsElement> windowsExplorerSession = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), opt);
             Assert.IsNotNull(windowsExplorerSession);
 
             // Navigate Windows Explorer to the target save location folder
